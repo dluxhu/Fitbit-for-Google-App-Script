@@ -119,9 +119,9 @@ function refreshTimeSeries() {
     var o = JSON.parse(result.getContentText());
 
     // set title
-    var titleCell = doc.getRange("a2");
+    var titleCell = sheet.getRange("a2");
     titleCell.setValue("Date");
-    var cell = doc.getRange('a3');
+    var cell = sheet.getRange('a3');
 
     // fill data
     for ( var i in o) {
@@ -426,8 +426,8 @@ function onInstall() {
 
 // Find the right row for a date.
 function findRow(date) {
-  var doc = SpreadsheetApp.getActiveSpreadsheet();
-  var cell = doc.getRange("A3");
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("import");
+  var cell = sheet.getRange("A3");
 
   // Find the first cell in first column which is either empty,
   // or has an equal or bigger date than the one we are looking for.
@@ -437,7 +437,7 @@ function findRow(date) {
   // If the cell we found has a newer date than ours, we need to
   // insert a new row right before that.
   if (cell.getValue() > date) {
-    doc.insertRowBefore(cell.getRow())
+    sheet.insertRowBefore(cell.getRow())
   }
   // return only the number of the row.
   return (cell.getRow());
