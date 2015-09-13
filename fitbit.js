@@ -75,18 +75,19 @@ function refreshTimeSeries() {
   var user = authorize().user;
   Logger.log(user)
   var doc = SpreadsheetApp.getActiveSpreadsheet()
-  doc.setFrozenRows(2);
+  var sheet = doc.getSheetByName("import")
+  sheet.setFrozenRows(2);
   // header rows
-  doc.getRange("a1").setValue(user.displayName);
-  doc.getRange("a1").setNote("DOB:" + user.dateOfBirth);
-  doc.getRange("b1").setValue(
+  sheet.getRange("a1").setValue(user.displayName);
+  sheet.getRange("a1").setNote("DOB:" + user.dateOfBirth);
+  sheet.getRange("b1").setValue(
       user.locale);
   // add the loggables for the last update
-  doc.getRange("c1").setValue("Loggables:");
-  doc.getRange("c1").setNote(getLoggables());
+  sheet.getRange("c1").setValue("Loggables:");
+  sheet.getRange("c1").setNote(getLoggables());
   // period for the last update
-  doc.getRange("d1").setValue("Period: " + getPeriod());
-  doc.getRange("e1").setValue("=image(\"" + user.avatar + "\";1)");
+  sheet.getRange("d1").setValue("Period: " + getPeriod());
+  sheet.getRange("e1").setValue("=image(\"" + user.avatar + "\";1)");
 
   // get inspired here http://wiki.fitbit.com/display/API/API-Get-Time-Series
   var activities = getLoggables();
@@ -144,9 +145,9 @@ function refreshTimeSeries() {
           row_index = findRow(date);
         }
         // Insert Date into first column
-        doc.getActiveSheet().getRange(row_index, 1).setValue(val["dateTime"]);
+        sheet.getRange(row_index, 1).setValue(val["dateTime"]);
         // Insert value
-        doc.getActiveSheet().getRange(row_index, 2 + activity * 1.0).setValue(Number(val["value"]));
+        sheet.getRange(row_index, 2 + activity * 1.0).setValue(Number(val["value"]));
       }
     }
   }
