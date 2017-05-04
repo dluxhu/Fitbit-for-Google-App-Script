@@ -1,0 +1,80 @@
+From d7d5c4d27bc66d37c57d74778c18c11a06113a86 Mon Sep 17 00:00:00 2001
+From: Kenny Millington <kmdm@users.noreply.github.com>
+Date: Fri, 18 Dec 2015 09:50:40 +0000
+Subject: [PATCH] Scopes, Heartrate and tokens
+
+* Add more fitbit oauth2 scopes
+* Add support for (resting) heart rate
+* Add menu for clearing the oauth2 token
+ - Allows easy ability to update scopes and refresh privileges.
+---
+ fitbit.js | 31 ++++++++++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 3 deletions(-)
+
+diff --git a/fitbit.js b/fitbit.js
+index d671a4b..498e775 100644
+--- a/fitbit.js
++++ b/fitbit.js
+@@ -44,7 +44,9 @@ var LOGGABLES = [ "activities/log/steps", "activities/log/distance",
+     "activities/log/minutesSedentary",
+     "activities/log/minutesLightlyActive",
+     "activities/log/minutesFairlyActive",
+-    "activities/log/minutesVeryActive", "sleep/timeInBed",
++    "activities/log/minutesVeryActive", 
++    "activities/heart",             
++    "sleep/timeInBed",
+     "sleep/minutesAsleep", "sleep/minutesAwake", "sleep/awakeningsCount",
+     "body/weight", "body/bmi", "body/fat" ];
+ 
+@@ -146,7 +148,13 @@ function refreshTimeSeries() {
+         // Insert Date into first column
+         doc.getActiveSheet().getRange(row_index, 1).setValue(val["dateTime"]);
+         // Insert value
+-        doc.getActiveSheet().getRange(row_index, 2 + activity * 1.0).setValue(Number(val["value"]));
++        var num_val = Number(val["value"]);
++        
++        if ( val.value["restingHeartRate"] !== undefined) {
++          num_val = Number(val.value["restingHeartRate"]);
++        }
++        
++        doc.getActiveSheet().getRange(row_index, 2 + activity * 1.0).setValue(num_val);
+       }
+     }
+   }
+@@ -359,7 +367,7 @@ function getService() {
+       .setProjectKey(getProjectKey())
+       .setCallbackFunction('fitbitAuthCallback')
+       .setPropertyStore(PropertiesService.getScriptProperties())
+-      .setScope('activity')
++      .setScope('activity heartrate nutrition profile sleep weight')
+       .setTokenHeaders({
+         'Authorization': 'Basic ' + Utilities.base64Encode(getConsumerKey() + ':' + getConsumerSecret())
+       });
+@@ -414,6 +422,10 @@ function onOpen() {
+     {
+         name: "Authorize",
+         functionName: "authorize"
++    },
++    {                   
++        name: "Clear Authorization Token",
++        functionName: "clearAuthorizationToken"
+     }];
+     ss.addMenu("Fitbit", menuEntries);
+ }
+@@ -441,3 +453,16 @@ function findRow(date) {
+   // return only the number of the row.
+   return (cell.getRow());
+ }
++
++
++function clearAuthorizationToken() {
++  getService().reset();
++}
++
++function dumpConfiguration() {
++  var store = PropertiesService.getScriptProperties();
++  
++  store.getKeys().forEach(function(k) {
++    Logger.log(k + ': ' + store.getProperty(k));
++  });  
++}
