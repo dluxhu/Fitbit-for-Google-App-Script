@@ -8,7 +8,7 @@
  * From fitbit documentation values are
  * 1d, 7d, 30d, 1w, 1m, 3m, 6m, 1y, max.
 */
-var period = "max";
+var period = "1y";
 
 /**
  * Key of ScriptProperty for Fitbit consumer key.
@@ -148,7 +148,6 @@ function refreshTimeSeries() {
         sheet.getRange(row_index, 1).setValue(val["dateTime"]);
         // Insert value
         sheet.getRange(row_index, 2 + activity * 1.0).setValue(Number(val["value"]));
-        Logger.log("Setting date: " + val["dateTime"] + ", value: " + val["value"]);
       }
     }
   }
@@ -437,9 +436,7 @@ function findRow(date) {
   }
   // If the cell we found has a newer date than ours, we need to
   // insert a new row right before that.
-  Logger.log("Found cell. Value: " + cell.getValue() + ", date: " + date);
   if (cell.getValue() > date) {
-    Logger.log("Inserting cell before...")
     sheet.insertRowBefore(cell.getRow())
   }
   // return only the number of the row.
