@@ -44,8 +44,8 @@ var LOGGABLES = [ "activities/log/steps", "activities/log/distance",
     "activities/log/minutesSedentary",
     "activities/log/minutesLightlyActive",
     "activities/log/minutesFairlyActive",
-    "activities/log/minutesVeryActive", 
-    "activities/heart",             
+    "activities/log/minutesVeryActive",
+    "activities/heart",
     "sleep/timeInBed",
     "sleep/minutesAsleep", "sleep/minutesAwake", "sleep/awakeningsCount",
     "body/weight", "body/bmi", "body/fat" ];
@@ -425,7 +425,7 @@ function onOpen() {
         name: "Authorize",
         functionName: "authorize"
     },
-    {                   
+    {
         name: "Clear Authorization Token",
         functionName: "clearAuthorizationToken"
     }];
@@ -465,8 +465,8 @@ function clearAuthorizationToken() {
 
 function dumpConfiguration() {
   var store = PropertiesService.getScriptProperties();
-  
+
   store.getKeys().forEach(function(k) {
     Logger.log(k + ': ' + store.getProperty(k));
-  });  
+  });
 }
